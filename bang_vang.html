@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bảng Vàng Học Sinh - Kho Học Cụ Số</title>
+    <title>Danh Sách Học Sinh - Kho Học Cụ Số</title>
     <style>
         * {
             box-sizing: border-box;
@@ -94,8 +94,8 @@
 <body>
 
     <header>
-        <h1>🌟 Bảng Vàng Trực Tuyến 🌟</h1>
-        <p>Danh sách học sinh đã hoàn thành xuất sắc các thử thách học cụ số</p>
+        <h1>🌟 Danh Sách Học Sinh Trải Nghiệm 🌟</h1>
+        <p>Danh sách học sinh đã hoàn thành trải nghiệm học cụ số</p>
     </header>
 
     <div class="container">
@@ -110,7 +110,7 @@
 
     <script>
         // 🌟 DÁN URL WEB APP GOOGLE SHEETS CỦA BẠN VÀO ĐÂY
-        const WEB_APP_URL = "DÁN_URL_WEB_APP_CỦA_BẠN_VÀO_ĐÂY";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz_o3xppKZHYLNbobuxgjie7nZnCeWmapzFQmdcXMzS0Q3LMMlkOs3LdXdBvW2IgQBz/exec";
 
         async function loadStudentsFromSheet() {
             const container = document.getElementById('studentContainer');
@@ -127,7 +127,7 @@
                 students.forEach(name => {
                     const badge = document.createElement('div');
                     badge.className = 'student-badge';
-                    badge.innerText = `👦👧 ${name}`;
+                    badge.innerText = `${name}`;
                     container.appendChild(badge);
                 });
             } catch (error) {
