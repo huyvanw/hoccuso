@@ -441,9 +441,11 @@
 
     <!-- Kịch bản tương tác -->
     <script>
-        let draggedBag = null;
+       let draggedBag = null;
 
-        // Xử lý khi ấn nút bắt đầu nhập tên -> Chuyển sang hộp thoại hướng dẫn có Highlight
+        // 🌟 ĐƯỜNG DẪN WEB APP GOOGLE SHEETS CỦA BẠN
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxowP8jOstEVQD3pBovWhau28hn9wXOWf5HAHtw7849TuD0nu_4yxFNzfPeFGlT-N4H/exec";
+
         function handleStartGame() {
             const nameInput = document.getElementById('playerNameInput').value.trim();
             const playerName = nameInput ? nameInput : "Bé thông minh";
@@ -451,11 +453,23 @@
             document.getElementById('displayName').innerText = playerName;
             document.getElementById('tutorName').innerText = playerName;
 
-            // Ẩn modal tên, hiện modal hướng dẫn
+            // 1. Gửi tên học sinh lên Google Sheets tự động (Chạy ngầm)
+            if (nameInput) {
+                fetch(WEB_APP_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ name: nameInput })
+                }).catch(error => console.error("Lỗi đồng bộ tên:", error));
+            }
+
+            // 2. Chuyển từ Modal nhập tên sang Modal hướng dẫn
             document.getElementById('nameModal').style.display = 'none';
             document.getElementById('tutorialModal').style.display = 'flex';
 
-            // Kích hoạt hiệu ứng Highlight làm nổi bật bao gạo bên trái
+            // 3. Kích hoạt hiệu ứng Highlight làm nổi bật bao gạo bên trái
             document.getElementById('leftBag3').classList.add('highlight-target');
             document.getElementById('leftBag9').classList.add('highlight-target');
         }
@@ -572,6 +586,7 @@
                 }
             }
         }
+        
 
         document.getElementById('resetBtn').addEventListener('click', () => {
             sourcePool.appendChild(document.getElementById('bag-5'));
