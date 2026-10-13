@@ -26,44 +26,46 @@
         h1 { color: #b45309; font-size: 28px; margin-bottom: 5px; }
         p { color: #475569; font-weight: bold; }
         
-        /* Bố cục chính chia thành 2 phần cân đối: Trái là danh sách học cụ, Phải là Bảng Vàng */
-        .main-layout {
-            display: grid;
-            grid-template-columns: 2fr 1fr; /* Phần học cụ rộng gấp đôi Bảng Vàng trên màn hình lớn */
-            gap: 25px;
-            width: 100%;
-            max-width: 1100px;
-        }
-
-        @media (max-width: 850px) {
-            .main-layout {
-                grid-template-columns: 1fr; /* Trên điện thoại sẽ tự động xếp dọc xuống dưới */
-            }
-        }
-
-        /* Khu vực chứa danh sách học cụ */
-        .section-tools {
+        .main-container {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 25px;
+            width: 100%;
+            max-width: 900px;
         }
-        .section-title {
-            color: #b45309;
-            font-size: 18px;
-            font-weight: 900;
-            margin-bottom: 5px;
-            border-left: 5px solid #f59e0b;
-            padding-left: 10px;
+
+        /* Thanh điều hướng hoặc nút mở Bảng Vàng */
+        .top-navbar {
+            display: flex;
+            justify-content: flex-end;
+            width: 100%;
         }
+        .btn-bangvang {
+            background: #059669;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 16px;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 10px rgba(5, 150, 105, 0.3);
+            transition: transform 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-bangvang:hover { background: #047857; transform: scale(1.05); }
+
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            width: 100%;
         }
         .card {
             background: white;
             border-radius: 20px;
-            padding: 18px;
+            padding: 20px;
             box-shadow: 0 8px 16px rgba(0,0,0,0.06);
             border: 3px solid #fde68a;
             text-align: center;
@@ -72,52 +74,15 @@
             flex-direction: column;
             justify-content: space-between;
         }
-        .card:hover { transform: translateY(-4px); }
-        .card h3 { color: #d97706; margin-bottom: 8px; font-size: 16px; }
-        .card p { font-size: 12.5px; color: #64748b; margin-bottom: 12px; }
+        .card:hover { transform: translateY(-5px); }
+        .card h3 { color: #d97706; margin-bottom: 8px; font-size: 17px; }
+        .card p { font-size: 13px; color: #64748b; margin-bottom: 15px; }
         .btn-play {
             background: #10b981; color: white; text-decoration: none;
-            padding: 8px 16px; border-radius: 12px; font-weight: bold; font-size: 13px;
+            padding: 9px 18px; border-radius: 12px; font-weight: bold; font-size: 13.5px;
             display: inline-block; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
         }
         .btn-play:hover { background: #059669; }
-
-        /* Khung Bảng Vàng */
-        .student-tracker {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.06);
-            border: 3px solid #6ee7b7;
-            height: fit-content;
-        }
-        .student-tracker h3 {
-            color: #059669;
-            margin-bottom: 12px;
-            text-align: center;
-            font-size: 16px;
-        }
-        .student-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
-            min-height: 120px;
-            max-height: 400px;
-            overflow-y: auto;
-            align-content: flex-start;
-            padding: 10px;
-            background: #f0fdf4;
-            border-radius: 12px;
-            border: 2px dashed #34d399;
-        }
-        .student-badge {
-            background: #10b981; color: white; padding: 5px 12px;
-            border-radius: 20px; font-size: 13px; font-weight: bold;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-            animation: fadeIn 0.3s ease;
-        }
-        .empty-text { color: #94a3b8; font-size: 12.5px; font-style: italic; text-align: center; margin-top: 30px; }
     </style>
 </head>
 <body>
@@ -127,88 +92,51 @@
         <p>Ứng dụng AI hỗ trợ đổi mới phương pháp dạy học Toán Tiểu Học</p>
     </header>
 
-    <div class="main-layout">
-        <!-- Cột Trái: Danh sách tất cả các học cụ số -->
-        <div class="section-tools">
-            <div class="section-title">📂 Danh Sách Học Cụ Số (1 - 4)</div>
-            <div class="grid-container">
-                <!-- Học cụ số 1 -->
-                <div class="card">
-                    <div>
-                        <h3>⚖️ Cân Thăng Bằng (12kg)</h3>
-                        <p>Khám phá cấu tạo số và quan hệ trọng lượng.</p>
-                    </div>
-                    <a href="can_thang_bang.html" class="btn-play">Trải Nghiệm Ngay 🚀</a>
-                </div>
-
-                <!-- Học cụ số 2 -->
-                <div class="card">
-                    <div>
-                        <h3>🧮 Học cụ số 2</h3>
-                        <p>Trò chơi tương tác giúp học sinh khám phá toán học.</p>
-                    </div>
-                    <a href="hoc_cu_2.html" class="btn-play">Trải Nghiệm Ngay 🚀</a>
-                </div>
-
-                <!-- Học cụ số 3 -->
-                <div class="card">
-                    <div>
-                        <h3>📐 Học cụ số 3</h3>
-                        <p>Trò chơi tương tác giúp học sinh khám phá toán học.</p>
-                    </div>
-                    <a href="hoc_cu_3.html" class="btn-play">Trải Nghiệm Ngay 🚀</a>
-                </div>
-
-                <!-- Học cụ số 4 -->
-                <div class="card">
-                    <div>
-                        <h3>🌟 Học cụ số 4</h3>
-                        <p>Trò chơi tương tác giúp học sinh khám phá toán học.</p>
-                    </div>
-                    <a href="hoc_cu_4.html" class="btn-play">Trải Nghiệm Ngay 🚀</a>
-                </div>
-            </div>
+    <div class="main-container">
+        <!-- Nút dẫn tới Bảng Vàng riêng biệt -->
+        <div class="top-navbar">
+            <a href="bang_vang.html" class="btn-bangvang">🏆 Xem Bảng Vàng Trực Tuyến</a>
         </div>
 
-        <!-- Cột Phải: Bảng Vàng Đồng Bộ Trực Tuyến -->
-        <div class="student-tracker">
-            <h3>🌟 Danh Sách Học Sinh Trải Nghiệm</h3>
-            <div id="studentContainer" class="student-list">
-                <span class="empty-text">Đang tải danh sách học sinh...</span>
+        <!-- Danh sách tất cả các học cụ số -->
+        <div class="grid-container">
+            <!-- Học cụ số 1 -->
+            <div class="card">
+                <div>
+                    <h3>⚖️ Cân Thăng Bằng (12kg)</h3>
+                    <p>Khám phá cấu tạo số và quan hệ trọng lượng qua hình ảnh trực quan.</p>
+                </div>
+                <a href="can_thang_bang.html" class="btn-play">Trải Nghiệm Ngay 🚀</a>
+            </div>
+
+            <!-- Học cụ số 2 -->
+            <div class="card">
+                <div>
+                    <h3>🧮 Học cụ số 2</h3>
+                    <p>Trò chơi tương tác giúp học sinh lớp 2 khám phá toán học.</p>
+                </div>
+                <a href="hoc_cu_2.html" class="btn-play">Trải Nghiệm Ngay 🚀</a>
+            </div>
+
+            <!-- Học cụ số 3 -->
+            <div class="card">
+                <div>
+                    <h3>📐 Học cụ số 3</h3>
+                    <p>Trò chơi tương tác giúp học sinh lớp 2 khám phá toán học.</p>
+                </div>
+                <a href="hoc_cu_3.html" class="btn-play">Trải Nghiệm Ngay 🚀</a>
+            </div>
+
+            <!-- Học cụ số 4 -->
+            <div class="card">
+                <div>
+                    <h3>🌟 Học cụ số 4</h3>
+                    <p>Trò chơi tương tác giúp học sinh lớp 2 khám phá toán học.</p>
+                </div>
+                <a href="hoc_cu_4.html" class="btn-play">Trải Nghiệm Ngay 🚀</a>
             </div>
         </div>
     </div>
 
-    <script>
-        // 🌟 DÁN URL WEB APP GOOGLE SHEETS CỦA BẠN VÀO DƯỚI ĐÂY
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz_o3xppKZHYLNbobuxgjie7nZnCeWmapzFQmdcXMzS0Q3LMMlkOs3LdXdBvW2IgQBz/exec";
-
-        async function loadStudentsFromSheet() {
-            const container = document.getElementById('studentContainer');
-            try {
-                const response = await fetch(WEB_APP_URL + "?t=" + Date.now());
-                const students = await response.json();
-
-                if (!students || students.length === 0) {
-                    container.innerHTML = '<span class="empty-text">Chưa có học sinh nào ghi nhận tham gia...</span>';
-                    return;
-                }
-
-                container.innerHTML = '';
-                students.forEach(name => {
-                    const badge = document.createElement('div');
-                    badge.className = 'student-badge';
-                    badge.innerText = `👦👧 ${name}`;
-                    container.appendChild(badge);
-                });
-            } catch (error) {
-                container.innerHTML = '<span class="empty-text" style="color: #ef4444;">⚠️ Đang kết nối dữ liệu trực tuyến...</span>';
-                console.error("Lỗi tải danh sách:", error);
-            }
-        }
-
-        loadStudentsFromSheet();
-        setInterval(loadStudentsFromSheet, 15000);
-    </script>
 </body>
 </html>
