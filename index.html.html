@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kho Học Cụ Số - Toán Tiểu Học AI</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #fef3c7 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 { color: #b45309; font-size: 28px; margin-bottom: 5px; }
+        p { color: #475569; font-weight: bold; }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+            border: 3px solid #fde68a;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .card:hover { transform: translateY(-5px); }
+        .card h3 { color: #d97706; margin-bottom: 10px; }
+        .card p { font-size: 13px; color: #64748b; margin-bottom: 15px; }
+        .btn-play {
+            background: #10b981;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: bold;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+        }
+        .btn-play:hover { background: #059669; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🎒 Kho Học Cụ Số Trực Quan</h1>
+        <p>Ứng dụng AI hỗ trợ đổi mới phương pháp dạy học Toán Tiểu Học</p>
+    </header>
+
+    <main class="grid-container">
+        <!-- Học cụ số 1 -->
+        <div class="card">
+            <h3>⚖️ Cân Thăng Bằng (12kg)</h3>
+            <p>Trò chơi tương tác giúp học sinh lớp 2 khám phá cấu tạo số và quan hệ trọng lượng qua hình ảnh trực quan.</p>
+            <a href="can_thang_bang.html" class="btn-play">Trải Nghiệm Ngay 🚀</a>
+        </div>
+
+        <!-- Bạn có thể thêm các học cụ khác vào đây trong tương lai -->
+    </main>
+
+</body>
+</html>
