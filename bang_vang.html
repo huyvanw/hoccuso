@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng Vàng Học Sinh - Kho Học Cụ Số</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', 'Segoe UI', Tahoma, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #e0f2fe 0%, #fef3c7 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            margin-top: 15px;
+        }
+        h1 { color: #059669; font-size: 32px; margin-bottom: 8px; text-shadow: 1px 1px 2px rgba(0,0,0,0.05); }
+        p { color: #475569; font-weight: bold; font-size: 15px; }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border: 4px solid #6ee7b7;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .student-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            min-height: 350px;
+            max-height: 600px;
+            overflow-y: auto;
+            align-content: flex-start;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 16px;
+            border: 2px dashed #34d399;
+        }
+        .student-badge {
+            background: #10b981; 
+            color: white; 
+            padding: 10px 20px;
+            border-radius: 30px; 
+            font-size: 16px; 
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(16, 185, 129, 0.2);
+            animation: fadeIn 0.4s ease;
+        }
+        .empty-text { 
+            color: #94a3b8; 
+            font-size: 15px; 
+            font-style: italic; 
+            text-align: center; 
+            margin-top: 150px; 
+        }
+        
+        .footer-nav {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .btn-back {
+            background: #f59e0b; 
+            color: white; 
+            text-decoration: none;
+            padding: 10px 24px; 
+            border-radius: 14px; 
+            font-weight: bold; 
+            font-size: 14px;
+            display: inline-block; 
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+            transition: transform 0.2s;
+        }
+        .btn-back:hover { background: #d97706; transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🌟 Bảng Vàng Trực Tuyến 🌟</h1>
+        <p>Danh sách học sinh đã hoàn thành xuất sắc các thử thách học cụ số</p>
+    </header>
+
+    <div class="container">
+        <div id="studentContainer" class="student-list">
+            <span class="empty-text">Đang kết nối tải danh sách học sinh từ hệ thống...</span>
+        </div>
+    </div>
+
+    <div class="footer-nav">
+        <a href="index.html" class="btn-back">⬅️ Quay lại Trang Chủ Học Cụ</a>
+    </div>
+
+    <script>
+        // 🌟 DÁN URL WEB APP GOOGLE SHEETS CỦA BẠN VÀO ĐÂY
+        const WEB_APP_URL = "DÁN_URL_WEB_APP_CỦA_BẠN_VÀO_ĐÂY";
+
+        async function loadStudentsFromSheet() {
+            const container = document.getElementById('studentContainer');
+            try {
+                const response = await fetch(WEB_APP_URL + "?t=" + Date.now());
+                const students = await response.json();
+
+                if (!students || students.length === 0) {
+                    container.innerHTML = '<span class="empty-text">Chưa có học sinh nào ghi nhận tham gia... Hãy vào học cụ để trải nghiệm ngay!</span>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                students.forEach(name => {
+                    const badge = document.createElement('div');
+                    badge.className = 'student-badge';
+                    badge.innerText = `👦👧 ${name}`;
+                    container.appendChild(badge);
+                });
+            } catch (error) {
+                container.innerHTML = '<span class="empty-text" style="color: #ef4444;">⚠️ Đang kết nối dữ liệu trực tuyến... Vui lòng chờ trong giây lát.</span>';
+                console.error("Lỗi tải danh sách:", error);
+            }
+        }
+
+        loadStudentsFromSheet();
+        setInterval(loadStudentsFromSheet, 15000); // Tự động làm mới mỗi 15 giây
+    </script>
+</body>
+</html>
