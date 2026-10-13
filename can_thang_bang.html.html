@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Trò Chơi Cân Thăng Bằng - Toán Tiểu Học</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e0f2fe 0%, #fef3c7 50%, #dcfce7 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Modal chung */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .modal-content {
+            background: #ffffff;
+            padding: 25px 25px;
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+            border: 6px solid #fbbf24;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .modal-content h2 {
+            color: #d97706;
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+        .modal-content p {
+            font-size: 14px;
+            color: #475569;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            border: 3px solid #fcd34d;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            outline: none;
+            text-align: center;
+            background: #fffbeb;
+            color: #b45309;
+            font-weight: bold;
+        }
+        .modal-content input:focus {
+            border-color: #f59e0b;
+        }
+        .modal-content button {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 17px;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4);
+            transition: 0.2s;
+            width: 100%;
+        }
+        .modal-content button:hover {
+            background: #059669;
+            transform: scale(1.02);
+        }
+
+        /* Hiệu ứng nhấp nháy làm nổi bật (Highlight) */
+        @keyframes pulseGlow {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); border-color: #f59e0b; }
+            50% { transform: scale(1.05); box-shadow: 0 0 20px 8px rgba(245, 158, 11, 0.9); border-color: #ef4444; }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); border-color: #f59e0b; }
+        }
+        .highlight-target {
+            animation: pulseGlow 1.2s infinite ease-in-out;
+            border: 4px solid #ef4444 !important;
+            background: #fef08a !important;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 5px;
+        }
+        h1 {
+            font-size: 24px;
+            color: #b45309;
+            text-shadow: 2px 2px 0px #fde68a;
+            margin-bottom: 4px;
+        }
+        .player-badge {
+            display: inline-block;
+            background: #ffffff;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #475569;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.06);
+            border: 2px solid #fbbf24;
+            font-size: 13px;
+        }
+        .player-badge span {
+            color: #d97706;
+            font-size: 14px;
+        }
+        p.instruct {
+            font-size: 13px;
+            color: #1e293b;
+            margin-top: 6px;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 6px 12px;
+            border-radius: 12px;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+
+        /* Mô phỏng chiếc cân */
+        .scale-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 520px;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            margin: 5px 0;
+        }
+        .scale-base {
+            position: absolute;
+            bottom: 0;
+            width: 140px;
+            height: 24px;
+            background: linear-gradient(180deg, #92400e, #78350f);
+            border-radius: 12px;
+            box-shadow: 0 6px 10px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .scale-pillar {
+            position: absolute;
+            bottom: 24px;
+            width: 28px;
+            height: 135px;
+            background: linear-gradient(90deg, #b45309, #d97706, #92400e);
+            border-radius: 6px;
+            z-index: 1;
+        }
+        .scale-top-cap {
+            position: absolute;
+            bottom: 155px;
+            width: 44px;
+            height: 20px;
+            background: #b45309;
+            border-radius: 10px;
+            z-index: 2;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .scale-beam-container {
+            position: absolute;
+            bottom: 160px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 5;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: center center;
+        }
+        .scale-beam {
+            position: absolute;
+            width: 100%;
+            height: 16px;
+            background: linear-gradient(180deg, #f59e0b, #d97706);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border: 2px solid #b45309;
+            left: 0;
+        }
+        .pan-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 6;
+        }
+        .pan-chains {
+            display: flex;
+            gap: 50px;
+            width: 90px;
+            height: 45px;
+        }
+        .chain {
+            width: 3px;
+            height: 45px;
+            background: #64748b;
+        }
+        .pan-plate {
+            width: 170px;
+            min-height: 75px;
+            background: rgba(254, 243, 199, 0.98);
+            border: 4px solid #d97706;
+            border-top: none;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 6px;
+            padding: 6px;
+        }
+        .pan-label {
+            margin-top: 4px;
+            font-size: 11px;
+            font-weight: 800;
+            background: white;
+            padding: 2px 10px;
+            border-radius: 12px;
+            color: #92400e;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            border: 2px solid #fde68a;
+        }
+
+        #messageBox {
+            width: 100%;
+            max-width: 480px;
+            padding: 10px 15px;
+            border-radius: 16px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 13px;
+            background: white;
+            border: 3px solid #cbd5e1;
+            color: #334155;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            margin-bottom: 8px;
+            transition: 0.3s;
+        }
+
+        .pool-container {
+            width: 100%;
+            max-width: 480px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 15px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            border: 3px solid #fde68a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .pool-container h3 {
+            font-size: 11px;
+            color: #b45309;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            font-weight: 900;
+        }
+        .bags-pool {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            min-height: 75px;
+            align-items: flex-end;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .bag {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            font-weight: 900;
+            border-radius: 16px 16px 12px 12px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            cursor: grab;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #fef3c7;
+            transition: transform 0.2s, filter 0.2s;
+            touch-action: none;
+        }
+        .bag:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        .bag-3 { width: 48px; height: 48px; font-size: 11px; background: linear-gradient(135deg, #10b981, #059669); }
+        .bag-9 { width: 66px; height: 66px; font-size: 13px; background: linear-gradient(135deg, #10b981, #059669); }
+        .bag-5 { width: 52px; height: 52px; font-size: 11px; }
+        .bag-6 { width: 60px; height: 60px; font-size: 12px; }
+        .bag-7 { width: 68px; height: 68px; font-size: 13px; }
+
+        footer {
+            margin-top: 4px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .btn-reset {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 8px 22px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 2px solid #fef3c7;
+        }
+        .btn-reset:hover {
+            background: #d97706;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Modal Nhập tên người chơi -->
+    <div id="nameModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>🌟 Bé Tên Là Gì Nhỉ? 🌟</h2>
+            <p>Nhập tên của bé để tham gia thử thách nhé!</p>
+            <input type="text" id="playerNameInput" placeholder="Ví dụ: Bảo Nam" autocomplete="off" />
+            <button id="startBtn" type="button">Vào Khám Phá 🚀</button>
+        </div>
+    </div>
+
+    <!-- 2. Modal Hướng dẫn cách chơi (Xuất hiện sau khi nhập tên) -->
+    <div id="tutorialModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content" style="width: 420px; border-color: #10b981;">
+            <h2 style="color: #059669;">📖 Hướng Dẫn Chơi Game</h2>
+            <p id="tutorialText" style="text-align: left; font-size: 13.5px;">
+                Chào <strong id="tutorName" style="color: #d97706;">Bé</strong>! Hãy nhìn sang đĩa cân bên trái: Có 2 bao gạo nặng <span style="color: #059669; font-weight: bold;">3 kg</span> và <span style="color: #059669; font-weight: bold;">9 kg</span>.<br><br>
+                👉 Tổng khối lượng bên trái là: <strong>3kg + 9kg = 12 kg</strong>.<br><br>
+                Nhiệm vụ của bé là chọn đúng <strong>2 bao gạo</strong> ở kho bên dưới đặt vào đĩa bên phải sao cho tổng khối lượng cũng bằng <strong>12 kg</strong> để cân thăng bằng nhé!
+            </p>
+            <button id="closeTutorialBtn" type="button" style="background: #f59e0b; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);">Đã Hiểu, Bắt Đầu Thôi! ✨</button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <h1>⚖️ Cuộc Phiêu Lưu Cân Thăng Bằng</h1>
+        <div class="player-badge">Bé: <span id="displayName">Bạn nhỏ</span></div>
+        <p class="instruct">Kéo hoặc chạm chọn 2 bao gạo ở kho dưới đặt lên đĩa phải để cân thăng bằng 12kg!</p>
+    </header>
+
+    <!-- Khu vực Cân -->
+    <main class="scale-wrapper">
+        <div class="scale-base"></div>
+        <div class="scale-pillar"></div>
+        <div class="scale-top-cap"></div>
+
+        <div id="balanceBeam" class="scale-beam-container">
+            <div class="scale-beam"></div>
+
+            <!-- Đĩa Trái chứa 2 bao gạo cần Highlight -->
+            <div class="pan-group" style="align-items: flex-start;">
+                <div class="pan-chains">
+                    <div class="chain"></div>
+                    <div class="chain"></div>
+                </div>
+                <div id="leftPan" class="pan-plate">
+                    <div id="leftBag3" class="bag bag-3"><span>🌾</span>3kg</div>
+                    <div id="leftBag9" class="bag bag-9"><span>🌾</span>9kg</div>
+                </div>
+                <div class="pan-label" style="margin-left: 10px;">Bên Trái: <span id="leftTotal">12</span> kg</div>
+            </div>
+
+            <!-- Đĩa Phải -->
+            <div class="pan-group" style="align-items: flex-end;">
+                <div class="pan-chains">
+                    <div class="chain"></div>
+                    <div class="chain"></div>
+                </div>
+                <div id="rightPan" class="pan-plate">
+                    <span id="rightPlaceholder" style="font-size: 11px; color: #b45309; font-weight: bold; text-align: center; width: 100%; margin-top: 10px;">👉 Thả 2 bao vào đây</span>
+                </div>
+                <div class="pan-label" style="margin-right: 10px;">Bên Phải: <span id="rightTotal">0</span> kg</div>
+            </div>
+        </div>
+    </main>
+
+    <div id="messageBox">
+        👆 Hãy chọn 2 bao gạo ở kho bên dưới đặt lên đĩa phải nhé!
+    </div>
+
+    <div class="pool-container">
+        <h3>📦 Kho bao gạo lựa chọn (Chọn đúng 2 bao):</h3>
+        <div id="sourcePool" class="bags-pool">
+            <div id="bag-5" class="bag bag-5" draggable="true"><span>🌾</span>5kg</div>
+            <div id="bag-6" class="bag bag-6" draggable="true"><span>🌾</span>6kg</div>
+            <div id="bag-7" class="bag bag-7" draggable="true"><span>🌾</span>7kg</div>
+        </div>
+    </div>
+
+    <footer>
+        <button id="resetBtn" class="btn-reset" type="button">🔄 Chơi Lại Từ Đầu</button>
+    </footer>
+
+    <!-- Kịch bản tương tác -->
+    <script>
+        let draggedBag = null;
+
+        // Xử lý khi ấn nút bắt đầu nhập tên -> Chuyển sang hộp thoại hướng dẫn có Highlight
+        function handleStartGame() {
+            const nameInput = document.getElementById('playerNameInput').value.trim();
+            const playerName = nameInput ? nameInput : "Bé thông minh";
+            
+            document.getElementById('displayName').innerText = playerName;
+            document.getElementById('tutorName').innerText = playerName;
+
+            // Ẩn modal tên, hiện modal hướng dẫn
+            document.getElementById('nameModal').style.display = 'none';
+            document.getElementById('tutorialModal').style.display = 'flex';
+
+            // Kích hoạt hiệu ứng Highlight làm nổi bật bao gạo bên trái
+            document.getElementById('leftBag3').classList.add('highlight-target');
+            document.getElementById('leftBag9').classList.add('highlight-target');
+        }
+
+        // Xử lý khi đóng hộp thoại hướng dẫn
+        function handleCloseTutorial() {
+            document.getElementById('tutorialModal').style.display = 'none';
+
+            // Xóa hiệu ứng Highlight sau khi bé đã chú ý xong
+            document.getElementById('leftBag3').classList.remove('highlight-target');
+            document.getElementById('leftBag9').classList.remove('highlight-target');
+        }
+
+        document.getElementById('startBtn').addEventListener('click', handleStartGame);
+        document.getElementById('playerNameInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleStartGame();
+            }
+        });
+
+        document.getElementById('closeTutorialBtn').addEventListener('click', handleCloseTutorial);
+
+        // Kéo thả và chạm cảm ứng cho các bao gạo lựa chọn
+        const bags = document.querySelectorAll('.bags-pool .bag[draggable="true"]');
+        bags.forEach(bag => {
+            bag.addEventListener('dragstart', (e) => {
+                draggedBag = bag;
+                e.dataTransfer.setData('text/plain', bag.id);
+            });
+
+            bag.addEventListener('click', () => {
+                const rightPan = document.getElementById('rightPan');
+                const sourcePool = document.getElementById('sourcePool');
+                
+                if (bag.parentElement === sourcePool) {
+                    if (rightPan.querySelectorAll('.bag').length < 2) {
+                        rightPan.appendChild(bag);
+                    }
+                } else {
+                    sourcePool.appendChild(bag);
+                }
+                updateBalanceState();
+            });
+        });
+
+        const rightPan = document.getElementById('rightPan');
+        rightPan.addEventListener('dragover', (e) => e.preventDefault());
+        rightPan.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (draggedBag && rightPan.querySelectorAll('.bag').length < 2) {
+                rightPan.appendChild(draggedBag);
+                updateBalanceState();
+            }
+            draggedBag = null;
+        });
+
+        const sourcePool = document.getElementById('sourcePool');
+        sourcePool.addEventListener('dragover', (e) => e.preventDefault());
+        sourcePool.addEventListener('drop', (e) => {
+            e.preventDefault();
+            if (draggedBag) {
+                sourcePool.appendChild(draggedBag);
+                updateBalanceState();
+            }
+            draggedBag = null;
+        });
+
+        function updateBalanceState() {
+            const rightPlaceholder = document.getElementById('rightPlaceholder');
+            const bagsInRight = rightPan.querySelectorAll('.bag');
+            
+            if (bagsInRight.length > 0) {
+                rightPlaceholder.style.display = 'none';
+            } else {
+                rightPlaceholder.style.display = 'block';
+            }
+
+            let rightTotalWeight = 0;
+            bagsInRight.forEach(bag => {
+                const weight = parseInt(bag.id.split('-')[1]);
+                rightTotalWeight += weight;
+            });
+
+            document.getElementById('rightTotal').innerText = rightTotalWeight;
+
+            const beam = document.getElementById('balanceBeam');
+            const messageBox = document.getElementById('messageBox');
+            const leftWeight = 12;
+
+            if (rightTotalWeight > leftWeight) {
+                beam.style.transform = 'rotate(8deg)';
+                messageBox.style.background = '#fee2e2';
+                messageBox.style.borderColor = '#f87171';
+                messageBox.style.color = '#991b1b';
+                messageBox.innerHTML = `❌ Bên phải nặng hơn (${rightTotalWeight} kg > ${leftWeight} kg), cân nghiêng sang phải!`;
+            } else if (rightTotalWeight < leftWeight) {
+                beam.style.transform = 'rotate(-8deg)';
+                messageBox.style.background = '#fef3c7';
+                messageBox.style.borderColor = '#f59e0b';
+                messageBox.style.color = '#92400e';
+                messageBox.innerHTML = `❌ Bên phải nhẹ hơn (${rightTotalWeight} kg < ${leftWeight} kg), cân nghiêng về bên trái!`;
+            } else {
+                beam.style.transform = 'rotate(0deg)';
+                if (bagsInRight.length === 2) {
+                    messageBox.style.background = '#d1fae5';
+                    messageBox.style.borderColor = '#34d399';
+                    messageBox.style.color = '#065f46';
+                    messageBox.innerHTML = `🎉 XUẤT SẮC! Tổng khối lượng hai bên đều là 12 kg, cân thăng bằng hoàn hảo! ⚖️✨`;
+                } else {
+                    messageBox.style.background = '#ffffff';
+                    messageBox.style.borderColor = '#cbd5e1';
+                    messageBox.style.color = '#334155';
+                    messageBox.innerHTML = `⚖️ Tổng khối lượng là 12kg, nhưng bé cần đặt đủ 2 bao gạo nhé!`;
+                }
+            }
+        }
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            sourcePool.appendChild(document.getElementById('bag-5'));
+            sourcePool.appendChild(document.getElementById('bag-6'));
+            sourcePool.appendChild(document.getElementById('bag-7'));
+            updateBalanceState();
+        });
+
+        updateBalanceState();
+    </script>
+</body>
+</html>
