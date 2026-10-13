@@ -39,13 +39,18 @@
             box-shadow: 0 8px 16px rgba(0,0,0,0.08);
             border: 3px solid #fde68a;
             text-align: center;
+            transition: transform 0.2s;
         }
+        .card:hover { transform: translateY(-5px); }
         .card h3 { color: #d97706; margin-bottom: 10px; }
         .card p { font-size: 13px; color: #64748b; margin-bottom: 15px; }
         .btn-play {
             background: #10b981; color: white; text-decoration: none;
             padding: 10px 20px; border-radius: 12px; font-weight: bold; display: inline-block;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
         }
+        .btn-play:hover { background: #059669; }
+
         .student-tracker {
             background: white; border-radius: 20px; padding: 20px;
             box-shadow: 0 8px 16px rgba(0,0,0,0.08); border: 3px solid #6ee7b7;
@@ -53,13 +58,14 @@
         .student-tracker h3 { color: #059669; margin-bottom: 10px; text-align: center; }
         .student-list {
             display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
-            min-height: 40px; align-items: center; padding: 10px;
+            min-height: 50px; align-items: center; padding: 12px;
             background: #f0fdf4; border-radius: 12px; border: 2px dashed #34d399;
         }
         .student-badge {
             background: #10b981; color: white; padding: 6px 14px;
             border-radius: 20px; font-size: 14px; font-weight: bold;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            animation: fadeIn 0.3s ease;
         }
         .empty-text { color: #94a3b8; font-size: 13px; font-style: italic; }
     </style>
@@ -68,20 +74,28 @@
 
     <header>
         <h1>🎒 Kho Học Cụ Số Trực Quan</h1>
-        <p>Hệ thống tự động đồng bộ danh sách học sinh tham gia</p>
+        <p>Hệ thống tự động đồng bộ danh sách học sinh tham gia từ mọi thiết bị</p>
     </header>
 
     <div class="main-container">
+        <!-- Danh sách học cụ số -->
         <div class="grid-container">
             <div class="card">
                 <h3>⚖️ Cân Thăng Bằng (12kg)</h3>
                 <p>Khám phá cấu tạo số và quan hệ trọng lượng.</p>
                 <a href="can_thang_bang.html" class="btn-play">Trải Nghiệm Ngay 🚀</a>
             </div>
+
+            <div class="card">
+                <h3>🧮 Học cụ số 2</h3>
+                <p>Trò chơi tương tác giúp học sinh lớp 2 khám phá toán học.</p>
+                <a href="hoc_cu_2.html" class="btn-play">Trải Nghiệm Ngay 🚀</a>
+            </div>
         </div>
 
+        <!-- Bảng Vàng Đồng Bộ Trực Tuyến -->
         <div class="student-tracker">
-            <h3>🌟 Bảng Vàng Đồng Bộ Từ Mọi Thiết Bị</h3>
+            <h3>🌟 Bảng Vàng Học Sinh Đã Trải Nghiệm</h3>
             <div id="studentContainer" class="student-list">
                 <span class="empty-text">Đang tải danh sách học sinh từ hệ thống...</span>
             </div>
@@ -89,13 +103,14 @@
     </div>
 
     <script>
-        // DÁN URL WEB APP CỦA BẠN VÀO DƯỚI ĐÂY
+        // 🌟 DÁN URL WEB APP GOOGLE SHEETS CỦA BẠN VÀO DƯỚI ĐÂY
         const WEB_APP_URL = "DÁN_URL_WEB_APP_CỦA_BẠN_VÀO_ĐÂY";
 
         async function loadStudentsFromSheet() {
             const container = document.getElementById('studentContainer');
             try {
-                const response = await fetch(WEB_APP_URL);
+                // Thêm tham số chống cache thời gian thực (?t=...)
+                const response = await fetch(WEB_APP_URL + "?t=" + Date.now());
                 const students = await response.json();
 
                 if (!students || students.length === 0) {
@@ -111,13 +126,16 @@
                     container.appendChild(badge);
                 });
             } catch (error) {
-                container.innerHTML = '<span class="empty-text" style="color: red;">Không thể tải dữ liệu trực tuyến.</span>';
+                container.innerHTML = '<span class="empty-text" style="color: #ef4444;">⚠️ Đang kết nối dữ liệu trực tuyến... Vui lòng tải lại trang sau ít phút.</span>';
                 console.error("Lỗi tải danh sách:", error);
             }
         }
 
-        // Tự động tải danh sách khi mở trang
+        // Tự động tải danh sách ngay khi mở trang
         loadStudentsFromSheet();
+        
+        // Tự động làm mới danh sách mỗi 15 giây để cập nhật học sinh mới chơi xong
+        setInterval(loadStudentsFromSheet, 15000);
     </script>
 </body>
 </html>
